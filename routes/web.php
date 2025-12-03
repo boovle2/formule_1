@@ -11,6 +11,7 @@ Route::get('/', function () {
 Route::resource('drivers', App\Http\Controllers\DriverController::class);
 Route::resource('teams', App\Http\Controllers\TeamController::class);
 Route::resource('races', App\Http\Controllers\RaceController::class);
+Route::resource('standings', App\Http\Controllers\StandingController::class);
 
 
 Route::get('/dashboard', function () {

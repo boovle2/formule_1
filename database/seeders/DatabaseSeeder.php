@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             RaceSeeder::class,
             SprintRaceSeeder::class,
             TeamsSeed::class,
+            DriversSeed::class,
+            user::class,
         ]);
     }
 }
