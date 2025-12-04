@@ -17,53 +17,53 @@ class TeamsSeed extends Seeder
         $teams = [
             [
                 'name' => 'Red Bull Racing',
-                'championships' => '7',
+                'championships' => '6',
                 'team_principal' => 'Christian Horner',
             ],
             [
-                'name' => 'Scuderia Ferrari',
+                'name' => 'McLaren',
+                'championships' => '10',
+                'team_principal' => 'Andrea Stella',
+            ],
+            [
+                'name' => 'Mercedes',
                 'championships' => '8',
-                'team_principal' => 'Mattia Binotto',
-            ],
-            [
-                'name' => 'McLaren F1 Team',
-                'championships' => '12',
-                'team_principal' => 'Andreas Seidl',
-            ],
-            [
-                'name' => 'Mercedes-AMG Petronas',
-                'championships' => '9',
                 'team_principal' => 'Toto Wolff',
             ],
             [
-                'name' => 'Alpine F1 Team',
-                'championships' => '2',
-                'team_principal' => 'Otmar Szafnauer',
+                'name' => 'Ferrari',
+                'championships' => '16',
+                'team_principal' => 'Fred Vasseur',
             ],
             [
-                'name' => 'Scuderia AlphaTauri',
-                'championships' => '0',
-                'team_principal' => 'Franz Tost',
-            ],
-            [
-                'name' => 'Aston Martin Cognizant',
-                'championships' => '0',
-                'team_principal' => 'Mike Krack',
-            ],
-            [
-                'name' => 'Williams Racing',
+                'name' => 'Williams',
                 'championships' => '9',
-                'team_principal' => 'Jost Capito',
+                'team_principal' => 'James Vowles',
             ],
             [
-                'name' => 'Alfa Romeo F1 Team',
-                'championships' => '2',
-                'team_principal' => 'Frédéric Vasseur',
+                'name' => 'Racing Bulls',
+                'championships' => '0',
+                'team_principal' => 'Laurent Mekies',
+            ],
+            [
+                'name' => 'Aston Martin',
+                'championships' => '0',
+                'team_principal' => 'Andy Cowell',
             ],
             [
                 'name' => 'Haas F1 Team',
                 'championships' => '0',
-                'team_principal' => 'Guenther Steiner',
+                'team_principal' => 'Ayao Komatsu',
+            ],
+            [
+                'name' => 'Kick Sauber',
+                'championships' => '0',
+                'team_principal' => 'Jonathan Wheatley',
+            ],
+            [
+                'name' => 'Alpine',
+                'championships' => '0',
+                'team_principal' => 'Oliver Oakes',
             ],
         ];
 
@@ -76,6 +76,5 @@ class TeamsSeed extends Seeder
                 ]
             );
         }
-
     }
 }
