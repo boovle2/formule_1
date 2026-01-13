@@ -17,14 +17,6 @@
                 <p class="text-gray-300 text-lg">2025 Championship Calendar</p>
             </div>
 
-            <!-- Create Button -->
-            @if (Auth::check() && auth()->user()->role === 'admin')
-            <div class="text-center mb-8">
-                <a href="{{ route('races.create') }}" class="inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300 shadow-lg">
-                    + Add New Race
-                </a>
-            </div>
-            @endif
 
             <!-- Races Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -87,26 +79,13 @@
                                     View Details
                                 </a>
                                 
-                                @if (Auth::check() && auth()->user()->role === 'admin')
-                                <div class="flex gap-2">
-                                    <a href="{{ route('races.edit', $race->id) }}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center font-semibold py-2 rounded-lg transition duration-300 text-xs">
-                                        Edit
-                                    </a>
-                                    <form action="{{ route('races.destroy', $race->id) }}" method="POST" class="flex-1">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="w-full bg-red-900 hover:bg-red-950 text-white font-semibold py-2 rounded-lg transition duration-300 text-xs" onclick="return confirm('Are you sure?')">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </div>
-                                @endif
+                                
                             </div>
                         </div>
                     </div>
                 @empty
                     <div class="col-span-full text-center py-12">
-                        <p class="text-gray-400 text-lg">No races found. <a href="{{ route('races.create') }}" class="text-red-500 hover:text-red-400">Add one now</a></p>
+                        <p class="text-gray-400 text-lg">No races found. <a href="{{ route('admin.index') }}" class="text-red-500 hover:text-red-400">Add one now</a></p>
                     </div>
                 @endforelse
             </div>

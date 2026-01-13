@@ -49,16 +49,17 @@ class SprintRaceSeeder extends Seeder
                 // fallback: behoud eerdere ruwe schatting
                 $sprintLaps = max(1, (int) floor(($race->laps ?? 1) * 0.35));
                 $sprintDistance = isset($race->distance) ? round($race->distance * 0.25, 3) : null;
-
-                DB::table('sprint_races')->insert([
-                    'name' => 'Sprint: ' . $race->name,
-                    'date' => $sprintDate,
-                    'location' => $race->location,
-                    'laps' => $sprintLaps,
-                    'distance' => $sprintDistance,
-                    'race_id' => $race->id,
-                ]);
             }
+
+            // Insert the sprint race using the computed values
+            DB::table('sprint_races')->insert([
+                'name' => 'Sprint: ' . $race->name,
+                'date' => $sprintDate,
+                'location' => $race->location,
+                'laps' => $sprintLaps,
+                'distance' => $sprintDistance,
+                'race_id' => $race->id,
+            ]);
         }
     }
 }

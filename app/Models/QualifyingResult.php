@@ -4,18 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class standings extends Model
+class QualifyingResult extends Model
 {
-    protected $table = 'standings';
+    protected $table = 'qualifying_results';
 
     protected $fillable = [
+        'qualifying_race_id',
         'driver_id',
-        'race_id',
         'placement',
-        'points',
-        'session_type',
-        'session_id',
+        'time',
     ];
+
     public $timestamps = false;
 
     public function driver()
@@ -23,8 +22,8 @@ class standings extends Model
         return $this->belongsTo(DriverModel::class, 'driver_id');
     }
 
-    public function race()
+    public function qualifyingRace()
     {
-        return $this->belongsTo(RaceModel::class, 'race_id');
+        return $this->belongsTo(QualifyingRaceModel::class, 'qualifying_race_id');
     }
 }

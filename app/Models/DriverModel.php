@@ -14,4 +14,20 @@ class DriverModel extends Model
     {
         return $this->belongsTo(TeamModel::class, 'team_id');
     }
+
+    public function standings()
+    {
+        return $this->hasMany(standings::class, 'driver_id');
+    }
+
+    /**
+     * Recalculate and persist total points for this driver (single source of truth).
+     */
+    public function refreshPoints()
+    {
+        $total = $this->standings()->sum('points');
+        $this->points = $total;
+        $this->save();
+        return $this;
+    }
 }
