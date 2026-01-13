@@ -48,22 +48,6 @@
                             <p class="text-white font-semibold">{{ $team->team_principal ?? 'N/A' }}</p>
                         </div>
                     </div>
-
-                    <!-- Actions -->
-                    @if (Auth::check() && auth()->user()->role === 'admin')
-                    <div class="border-t border-gray-700 pt-8 flex gap-4">
-                        <a href="{{ route('teams.edit', $team->id) }}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-300 text-center">
-                            Edit Team
-                        </a>
-                        <form action="{{ route('teams.destroy', $team->id) }}" method="POST" class="flex-1">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="w-full bg-red-900 hover:bg-red-950 text-white font-bold py-3 rounded-lg transition duration-300" onclick="return confirm('Are you sure you want to delete this team?')">
-                                Delete Team
-                            </button>
-                        </form>
-                    </div>
-                    @endif
                 </div>
             </div>
         </div>

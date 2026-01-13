@@ -17,14 +17,7 @@
                 <p class="text-gray-300 text-lg">Discover all the teams competing in the championship</p>
             </div>
 
-            <!-- Create Button -->
-            @if (Auth::check() && auth()->user()->role === 'admin')
-            <div class="text-center mb-8">
-                <a href="{{ route('teams.create') }}" class="inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300 shadow-lg">
-                    + Create New Team
-                </a>
-            </div>
-            @endif
+            
 
             <!-- Teams Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
@@ -72,26 +65,12 @@
                                     View Details
                                 </a>
                                 
-                                @if (Auth::check() && auth()->user()->role === 'admin')
-                                <div class="flex gap-2">
-                                    <a href="{{ route('teams.edit', $team->id) }}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center font-semibold py-2 rounded-lg transition duration-300 text-sm">
-                                        Edit
-                                    </a>
-                                    <form action="{{ route('teams.destroy', $team->id) }}" method="POST" class="flex-1">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="w-full bg-red-900 hover:bg-red-950 text-white font-semibold py-2 rounded-lg transition duration-300 text-sm" onclick="return confirm('Are you sure?')">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </div>
-                                @endif
                             </div>
                         </div>
                     </div>
                 @empty
                     <div class="col-span-full text-center py-12">
-                        <p class="text-gray-400 text-lg">No teams found. <a href="{{ route('teams.create') }}" class="text-red-500 hover:text-red-400">Create one now</a></p>
+                        <p class="text-gray-400 text-lg">No teams found. <a href="{{ route('admin.index') }}" class="text-red-500 hover:text-red-400">Create one now</a></p>
                     </div>
                 @endforelse
             </div>

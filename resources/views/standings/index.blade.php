@@ -17,14 +17,6 @@
                 <p class="text-gray-300 text-lg">2025 Formula 1 Season</p>
             </div>
 
-            <!-- Admin Button -->
-            @if (Auth::check() && auth()->user()->role === 'admin')
-            <div class="text-center mb-8">
-                <a href="{{ route('standings.create') }}" class="inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300 shadow-lg">
-                    + Enter Race Results
-                </a>
-            </div>
-            @endif
 
             <!-- Tabs -->
             <div class="flex gap-4 mb-8 border-b border-gray-700">

@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\RaceModel;
 use App\Models\SprintRaceModel;
+use App\Models\QualifyingRaceModel;
+use App\Models\QualifyingResult;
+use App\Models\standings as StandingsModel;
 
 
 class RaceController extends Controller
@@ -57,7 +60,51 @@ class RaceController extends Controller
     {
         $sprint_races = SprintRaceModel::where('race_id', $id)->get();
         $race = RaceModel::findOrFail($id);
-        return view('races.show', compact('race', 'sprint_races'));
+
+        // Load standings/results for this race (if any)
+        $raceResults = StandingsModel::where('race_id', $id)
+            ->where('session_type', 'race')
+            ->with('driver')
+            ->orderBy('placement')
+            ->get();
+
+        $sprintResultsBySession = StandingsModel::where('race_id', $id)
+            ->where('session_type', 'sprint')
+            ->with('driver')
+            ->orderBy('session_id')
+            ->orderBy('placement')
+            ->get()
+            ->groupBy('session_id');
+
+        // Load qualifying races and their results (if any)
+        $qualifying_races = QualifyingRaceModel::where('race_id', $id)->get();
+        foreach ($qualifying_races as $qr) {
+            $qr->results = QualifyingResult::where('qualifying_race_id', $qr->id)
+                ->with('driver')
+                ->orderBy('placement')
+                ->get();
+        }
+
+        return view('races.show', compact('race', 'sprint_races', 'raceResults', 'sprintResultsBySession', 'qualifying_races'));
+    }
+
+    /**
+     * Return qualifying results (driver IDs ordered) for a given race as JSON.
+     */
+    public function qualifyingResults(string $id)
+    {
+        // Find the main qualifying race for this race (take first)
+        $qr = QualifyingRaceModel::where('race_id', $id)->first();
+        if (! $qr) {
+            return response()->json(['drivers' => []]);
+        }
+
+        $results = QualifyingResult::where('qualifying_race_id', $qr->id)
+            ->orderBy('placement')
+            ->pluck('driver_id')
+            ->toArray();
+
+        return response()->json(['drivers' => $results]);
     }
 
     /**

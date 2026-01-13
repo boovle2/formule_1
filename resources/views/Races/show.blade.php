@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $race->name }}</title>
     @vite('resources/css/app.css')
 </head>
+
 <body class="bg-gray-50">
     @include('header')
-    
+
     <div class="min-h-screen bg-zinc-800 py-12 px-4">
         <div class="max-w-4xl mx-auto">
             <!-- Back Button -->
@@ -20,11 +22,11 @@
                 <!-- Header with Image -->
                 <div class="relative h-80 bg-gray-700 overflow-hidden">
                     @if ($race->image)
-                        <img src="{{ asset('storage/' . $race->image) }}" alt="{{ $race->name }}" class="w-full h-full object-cover">
+                    <img src="{{ asset('storage/' . $race->image) }}" alt="{{ $race->name }}" class="w-full h-full object-cover">
                     @else
-                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-600 to-red-800">
-                            <span class="text-white text-8xl font-bold opacity-20">🏁</span>
-                        </div>
+                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-600 to-red-800">
+                        <span class="text-white text-8xl font-bold opacity-20">🏁</span>
+                    </div>
                     @endif
                 </div>
 
@@ -60,6 +62,8 @@
                         </div>
                     </div>
 
+
+
                     <!-- Sprint Races Section -->
                     @if ($sprint_races && count($sprint_races) > 0)
                     <div class="mb-8 pb-8 border-b border-gray-700">
@@ -79,26 +83,128 @@
                     </div>
                     @endif
 
-                    <!-- Actions -->
-                    @if (Auth::check() && auth()->user()->role === 'admin')
-                    <div class="border-t border-gray-700 pt-8 flex gap-4">
-                        <a href="{{ route('races.edit', $race->id) }}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-300 text-center">
-                            Edit Race
-                        </a>
-                        <form action="{{ route('races.destroy', $race->id) }}" method="POST" class="flex-1">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="w-full bg-red-900 hover:bg-red-950 text-white font-bold py-3 rounded-lg transition duration-300" onclick="return confirm('Are you sure you want to delete this race?')">
-                                Delete Race
-                            </button>
-                        </form>
+                    <!-- Race results -->
+                    @if (isset($raceResults) && $raceResults->count() > 0)
+                    <div class="mb-8 pb-8 border-b border-gray-700">
+                        <h3 class="text-white font-bold text-xl mb-4">Race Results</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-white">
+                                <thead class="bg-gray-900 border-b border-gray-700">
+                                    <tr>
+                                        <th class="px-6 py-4 text-left">Position</th>
+                                        <th class="px-6 py-4 text-left">Driver</th>
+                                        <th class="px-6 py-4 text-left">Team</th>
+                                        <th class="px-6 py-4 text-right">Points</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($raceResults as $result)
+                                    <tr class="border-b border-gray-700 hover:bg-gray-700 transition">
+                                        <td class="px-6 py-4 font-bold">
+                                            @if ($result->placement == 1)
+                                            <span class="text-yellow-500 text-2xl">🥇</span> 1st
+                                            @elseif ($result->placement == 2)
+                                            <span class="text-gray-300 text-2xl">🥈</span> 2nd
+                                            @elseif ($result->placement == 3)
+                                            <span class="text-orange-500 text-2xl">🥉</span> 3rd
+                                            @else
+                                            {{ $result->placement }}
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            @if ($result->driver)
+                                            <a href="{{ route('drivers.show', $result->driver->id) }}" class="hover:text-red-500 transition">
+                                                {{ $result->driver->Fname }} {{ $result->driver->Lname }}
+                                            </a>
+                                            @else
+                                            <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            @if ($result->driver && $result->driver->team)
+                                            <a href="{{ route('teams.show', $result->driver->team->id) }}" class="text-red-400 hover:text-red-300">
+                                                {{ $result->driver->team->name }}
+                                            </a>
+                                            @else
+                                            <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 text-right font-bold text-2xl text-red-500">{{ $result->points }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @endif
+
+                    <!-- Sprint race results (grouped by sprint session) -->
+                    @if (isset($sprintResultsBySession) && $sprintResultsBySession->count() > 0)
+                    <div class="mb-8 pb-8 border-b border-gray-700">
+                        <h3 class="text-white font-bold text-xl mb-4">Sprint Race Results</h3>
+
+                        @foreach ($sprintResultsBySession as $sessionId => $sessionResults)
+                        @php $sprint = $sprint_races->firstWhere('id', $sessionId); @endphp
+                        <div class="mb-6">
+                            <h4 class="text-gray-200 font-semibold mb-2">{{ $sprint ? $sprint->name : 'Sprint' }}</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-white">
+                                    <thead class="bg-gray-900 border-b border-gray-700">
+                                        <tr>
+                                            <th class="px-6 py-4 text-left">Position</th>
+                                            <th class="px-6 py-4 text-left">Driver</th>
+                                            <th class="px-6 py-4 text-left">Team</th>
+                                            <th class="px-6 py-4 text-right">Points</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($sessionResults as $result)
+                                        <tr class="border-b border-gray-700 hover:bg-gray-700 transition">
+                                            <td class="px-6 py-4 font-bold">
+                                                @if ($result->placement == 1)
+                                                <span class="text-yellow-500 text-2xl">🥇</span> 1st
+                                                @elseif ($result->placement == 2)
+                                                <span class="text-gray-300 text-2xl">🥈</span> 2nd
+                                                @elseif ($result->placement == 3)
+                                                <span class="text-orange-500 text-2xl">🥉</span> 3rd
+                                                @else
+                                                {{ $result->placement }}
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                @if ($result->driver)
+                                                <a href="{{ route('drivers.show', $result->driver->id) }}" class="hover:text-red-500 transition">
+                                                    {{ $result->driver->Fname }} {{ $result->driver->Lname }}
+                                                </a>
+                                                @else
+                                                <span class="text-gray-400">-</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                @if ($result->driver && $result->driver->team)
+                                                <a href="{{ route('teams.show', $result->driver->team->id) }}" class="text-red-400 hover:text-red-300">
+                                                    {{ $result->driver->team->name }}
+                                                </a>
+                                                @else
+                                                <span class="text-gray-400">-</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-4 text-right font-bold text-2xl text-red-500">{{ $result->points }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        @endforeach
+
                     </div>
                     @endif
                 </div>
             </div>
         </div>
-    </div>
 
 </body>
+
 </html>
 @include('footer')
